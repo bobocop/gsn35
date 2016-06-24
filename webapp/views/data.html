@@ -1,0 +1,212 @@
+<div id="container" >
+
+</br>
+<accordion close-others="false">
+	<accordion-group heading="Values & aggregation" is-open="false">
+	<!-- NUMBER OF VALUES TO FETCH -->
+	<div class="row">
+		<div class="large-2 columns">
+			<select ng-model="numberOfValuesToFetch" ng-options="o.name for o in numberOfValuesToFetchOptions" ng-change="numberOfValuesToFetchChanged()">
+			</select>
+		</div>
+		<div class="large-1 columns left">
+			<input ng-model="valuesToFetch" ng-disabled="numberOfValuesToFetch.name === 'All data'" type="text" placeholder="" />
+		</div>
+		<div class="large-1 columns left" style="position:relative;">
+			Values
+		</div>
+	</div>
+
+	<!-- AGGREGATION -->
+	<div class="row">
+		<div class="large-2 columns">
+			<select ng-model="aggregation" ng-options="o.name for o in aggregationOptions" ng-change="aggregationChanged()"></select>
+		</div>
+		<div class="large-1 columns left">
+			<input ng-model="aggregationPeriod" ng-disabled="aggregation.name === 'No aggregation'" type="text" placeholder="" />
+		</div>
+		<div class="large-2 columns left">
+			<select ng-model="aggregationUnit" ng-disabled="aggregation.name === 'No aggregation'" ng-options="o.name for o in aggregationUnitOptions" ng-change="aggregationUnitChanged()"></select>
+		</div>
+	</div>
+	</accordion-group>
+
+	<accordion-group heading="Outputs" is-open="outputsOpen">
+	<!-- ADDOUTPUT BUTTON -->
+	<div class ="row">
+		<div class="large-2 medium-2 columns">
+			<a ng-click="addOutput()" class="alert button tiny round radius">Add output</a>
+		</div>
+	</div>
+	
+	<!-- SENSORS/FIELDS TO OUTPUT -->
+	<div class="row" ng-repeat="dataOutput in dataOutputRows">
+		<div class="large-1 columns">
+			Virtual sensor
+		</div>
+		<div class="large-2 columns left">
+			<select ng-model="selectedSensor[$index]" ng-options="o.name for o in dataOutput track by o.name" ng-change="sensorSelected($index)" ></select>
+		</div>
+	    <div class="large-1 columns">
+			Field
+		</div>
+	    <div class="large-2 medium-2 columns left">
+			<select ng-model="selectedField[$index]" ng-options="o for o in selectedSensor[$index].structureFields"></select>
+		</div>
+		<div class="large-1 columns">
+			Draw on
+		</div>
+		<div class="large-2 medium-2 columns left">
+			<select ng-model="dataOutputChart[$index]" ng-options="i for i in chartIndices"></select>
+		</div>
+		<div class="large-1 columns left" >
+			<a ng-click="removeOutput($index)" class="alert round left button tiny secondary" ng-show = "dataOutputRows.length > 1 "><strong>X</strong></a>
+		</div>
+	</div>
+	
+	<!-- FROM/TO PICKER -->
+	<div class="row">
+		<div class="large-1 columns">
+			From
+		</div>
+	    <div class="large-2 columns left">
+			<input id="datetimepickerfrom" type="text" ng-model="from" ng-change="fromChanged()">
+			<script type="text/javascript">
+				jQuery('#datetimepickerfrom').datetimepicker({
+					format:'Y-m-d H:i:s', 
+					maxDate:0
+				});
+			</script>
+		</div>
+	
+		<div class="large-1 columns">
+			Until
+		</div>
+		<div class="large-2 columns left">
+			<input id="datetimepickeruntil" type="text" ng-model="until" ng-change="untilChanged()">
+				<script type="text/javascript">
+					jQuery('#datetimepickeruntil').datetimepicker({
+						format:'Y-m-d H:i:s',
+						maxDate:0
+					});
+				</script>
+		</div>
+	</div>
+	</accordion-group>
+
+	<accordion-group heading="Conditions" is-open="false">
+	<!-- ADDCONDITION BUTTON -->
+	<div class="row">
+		<div class="large-2 columns">
+			<a ng-click="addCondition()" class="alert button tiny radius round">Add condition</a>
+		</div>
+	</div>      
+	
+	<!-- CONDITION PICKERS -->
+	<div class="row" ng-repeat="conditionRow in conditionRows">
+		<div class="large-2 columns" ng-show="$index != 0">
+			<select ng-model="selectedConditionJoin[$index]" ng-options="o.name for o in conditionJoins" ng-change=""></select>
+		</div>
+		<div class="large-2 columns left">
+			<select ng-model="selectedConditionSensor[$index]" ng-options="o.name for o in conditionRow" ng-change="sensorConditionSelected($index)"></select>
+		</div>
+		<div class="large-2 columns left">
+			<select ng-model="selectedConditionField[$index]" ng-options="o for o in selectedConditionSensor[$index].structureFields" ng-change=""></select>
+		</div>
+		<div class="large-1 columns left text-center" style="position:relative;">
+			Between
+		</div>
+		<div class="large-1 columns left"  style="">
+			<input ng-model="selectedConditionMinValue[$index]" type="text" placeholder="" />
+		</div>
+		
+		<div class="large-1 columns left text-center" style="">
+			and
+		</div>
+		<div class="large-1 columns left" style="">
+			<input ng-model="selectedConditionMaxValue[$index]" type="text" placeholder="" />
+		</div>
+		<div class="large-1 columns left" style="">
+			<a ng-click="removeCondition($index)" class="alert round left button tiny secondary" ng-show = "conditionRows.length > 1 "><strong>X</strong></a>
+		</div>
+	</div>
+	</accordion-group>
+</accordion>
+
+<br/>
+
+<!-- TABS -->
+<div class = "row">
+	<div class="large-12 columns" >
+		<tabset>	
+			<tab heading="Plot">
+				<div class="content">
+					<div class="row">
+						<div class="large-2 columns" >
+							<a ng-click="fetchData(); checkAccord();" class="alert round left button tiny secondary">Draw by filter</a>
+						</div>
+						<div class="large-2 columns end" >
+							<i>Last refresh on: {{$storage.lastRefresh}}</i>
+						</div>
+					</div>
+					<div class="row">
+						<div ng-repeat="c in chartConfig" >
+							<div class="large-{{12 / $storage.widthSliderVal}} columns " >
+								   
+								<highchart id="{{'chartdiv' + $index}}" config="chartConfig[$index]" class="chartstyle" ></highchart>
+							</div>
+						</div>
+					</div>
+				</div>
+			</tab>
+			<tab heading="Table" ng-click="fetchData();">
+				<div class="content">
+						<div class="row">
+							<div class="large-2 columns left" style="position:relative;left:0px;">Virtual sensor:
+								<select ng-model="selectedTable" ng-options="o.name for o in results" ng-change="showResulTable()"></select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="large-12 columns">
+								<div class="gridStyle" ng-grid="gridOptions">
+								</div>
+							</div>
+						</div>
+				</div>
+			</tab>
+			<tab heading="Download">
+				<div class="content">
+					<div class="row">
+						<div class="large-2 columns" >
+							<a ng-click="downloadReport('csv')" class="alert round left button tiny secondary">Download CSV</a>
+						</div>
+						<div class="large-2 columns left" style="position:relative;">
+							<a ng-click="downloadReport('xml')" class="alert round left button tiny secondary">Download XML</a>
+						</div>
+						<div class="large-2 columns left" style="position:relative;">
+							<a ng-click="downloadReport('pdf')" class="alert round left button tiny secondary">Generate PDF</a>
+						</div>
+					</div>
+				</div>
+			</tab>
+			<tab heading="Options" ng-click="refreshSlider();">
+				<div class="content">
+						<div class="row" >
+							<div class="small-2 columns end" >
+								<div popover-popup-delay="1000" popover-title="Chart width" popover-trigger="mouseenter" popover-placement="top" popover="An amount of screen width allocated per chart (1 is the widest, 4 meaning 1/4 of the screen is the narrowest). Equivalently, the number of charts in a row. " >Chart width:</div><rzslider rz-slider-model="$storage.widthSliderVal" rz-slider-options="widthSlider.options"></rzslider>
+							</div>
+						</div>
+						<br />
+						<div class="row" >
+							<!--<div class="small-2 columns left" >
+								Close accordion when drawing:<br /><input type="checkbox" ng-model="closeAccord" class="js-switch" ui-switch="{color: '#E43B11', secondaryColor: '#F89279'}" /> {{ closeAccord}}
+							</div>-->
+						</div>
+				</div>
+			</tab>
+		</tabset>
+	</div>
+</div>
+
+</div>
+

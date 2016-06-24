@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<virtual-sensor name="mobile_service" priority="10">
+	<processing-class>
+		<class-name>hr.fer.rasip.mobile.MobileService</class-name>
+		<init-params>
+			<param name="gateway-mode">false</param><!-- when set to true VS only forwards data to VSs that are subscribed to this VS -->
+			<param name="only-registered-devices">false</param><!-- "true" or "false", if anything else is written it will be set to "false" -->
+			<param name="timeout">300</param><!-- time after which generated VSDs of mobile devices will be deleted if innactive, expressed in minutes,
+											   set to "never" to disable this option -->
+			<param name="path-to-dictionary">/home/rasip/Desktop/gsn-client/mobile/dictionary.properties</param><!-- path to dictionary of registered devices -->
+			<param name="path-to-virtual-sensors">/home/rasip/Desktop/gsn-client/virtual-sensors</param><!-- path to folder where virtual sensor are, full path or relative path from folder where processing class is -->
+			<param name="delete-on-exit">true</param>
+			<param name="device-id-delimiter">android_id</param>
+
+			<!-- file names -->
+			<param name="battery-file-name"></param>
+			<!--param name="battery-connected-file-name"></param-->
+			<!--param name="battery-level-file-name"></param-->
+			<!--param name="location-file-name"></param-->
+			<!--param name="signal-file-name"></param-->
+			<param name="wifi-file-name"></param>
+			<!--param name="network-file-name"></param-->
+			<param name="sensors-file-name"></param>
+			<!--param name="orientation-file-name"></param-->
+			<param name="acceleration-file-name"></param>
+			<!--param name="gravity-file-name"></param-->
+			<!--param name="gyroscope-file-name"></param-->
+			<!--param name="linear-acc-file-name"></param-->
+			<!--param name="weather-file-name"></param-->
+			<!--param name="light-prox-file-name"></param-->
+			<!--param name="magnetic-field-file-name"></param-->
+			<!--param name="bluetooth-garmin-file-name"></param-->
+		</init-params>
+		<output-structure>
+			<field name="active_devices" type="VARCHAR(500)"/>
+			<field name="last_data_received" type="VARCHAR(500)"/>
+		</output-structure>
+	</processing-class>
+	<description>Service for handling data from SmartSense Android application.</description>
+	<addressing/>	
+	<storage history-size="1000"/>
+	<streams>
+		<stream name="input1">
+			<source alias="source1" sampling-rate="1" storage-size="1">
+				<address wrapper="mUDPWrapper">
+					<predicate key="port">22021</predicate>
+				</address>
+				<query>select * from wrapper</query>
+			</source>
+			<query>select * from source1</query>
+		</stream>
+	</streams>
+</virtual-sensor>

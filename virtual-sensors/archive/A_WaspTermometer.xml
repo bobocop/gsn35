@@ -1,0 +1,29 @@
+<virtual-sensor name="A_WaspTermometer" priority="10">
+    <processing-class>
+        <class-name>gsn.endymion.EndymionProcessingClass</class-name>
+        <output-structure>
+            <field name="temperature" type="int"/>
+            <field name="battery" type="int"/>
+        </output-structure>
+    </processing-class>
+    <description>Collects data from Endymion</description>
+    <life-cycle pool-size="10" />
+    <addressing>
+        <predicate key="geographical">Endymion - GSN</predicate>
+        <predicate key="LATITUDE">45.855452</predicate>
+        <predicate key="LONGITUDE">15.986867</predicate>
+        <predicate key="owner">RASIP - Endymion</predicate>
+    </addressing>
+    <storage history-size="24h" />
+    <streams>
+        <stream name="input1">
+            <source alias="source1" sampling-rate="1" storage-size="1">
+                <address wrapper="local">
+                    <predicate key="query">select data, timed from Endymion where GSNId = '161.53.67.90:22001' and vSensorName = 'a_wasptermometer'</predicate>
+                </address>
+                <query>SELECT * FROM wrapper</query>
+            </source>
+            <query>SELECT * FROM source1</query>
+        </stream>
+    </streams>
+</virtual-sensor>
