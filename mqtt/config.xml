@@ -3,17 +3,22 @@
   <connection-params>
     <gsn-name>GSN_MQTT_develop</gsn-name>
     <gsn-id>1</gsn-id>
-    <broker-url>tcp://test.mosquitto.org</broker-url>
+    <mqtt-anonymous>true</mqtt-anonymous>
+    <mqtt-security>true</mqtt-security>
+    <broker-url>test.mosquitto.org</broker-url>
     <broker-port>1883</broker-port>
-    <websockets-url>test.mosquitto.org</websockets-url>
+    <secure-port>8883</secure-port>
     <websockets-port>8080</websockets-port>
+    <websockets-secure-port>8081</websockets-secure-port>
     <mqtt-username>admin</mqtt-username>
     <mqtt-password>admin</mqtt-password>
-    <mqtt-gateway>RASIP/#</mqtt-gateway>
-    <mqtt-topic-endymion-alarm>RASIP/Endymion/alarms</mqtt-topic-endymion-alarm>
-    <mqtt-topic-notifications>RASIP/GSN/notifications</mqtt-topic-notifications>
-    <mqtt-topic-watchdog>RASIP/GSN/watchdog</mqtt-topic-watchdog>
-    <mqtt-topic-relay>RASIP/GSN/relays</mqtt-topic-relay>
-    <mqtt-topic-waspmotegateway>RASIP/GSN/GatewayOutput</mqtt-topic-waspmotegateway>
+    <broker-ca-certificate>mqtt/CaCertificates/mosquitto.org.crt</broker-ca-certificate>
+    <mqtt-gateway>RASIP2/#</mqtt-gateway>
+    <mqtt-topic-endymion-alarm>RASIP2/Endymion/alarms</mqtt-topic-endymion-alarm>
+    <mqtt-topic-notifications>RASIP2/GSN/notifications</mqtt-topic-notifications>
+    <mqtt-topic-watchdog>RASIP2/GSN/watchdog</mqtt-topic-watchdog>
+    <mqtt-topic-relay>RASIP2/GSN/relays</mqtt-topic-relay>
+    <mqtt-topic-relay-ack>RASIP2/GSN/relaysAck</mqtt-topic-relay-ack>
+    <mqtt-topic-waspmotegateway>RASIP2/GSN/GatewayOutput</mqtt-topic-waspmotegateway>
   </connection-params>
 </config>
