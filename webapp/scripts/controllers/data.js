@@ -4,9 +4,10 @@ angular.module('gsnClientApp')
   .controller('DataController', function ($scope, VirtualSensorService, SettingsService, ChartService, $http, moment, $localStorage, $timeout) {
 
     var sensors;
-    //$localStorage.$reset();
     
-    $scope.$storage = $localStorage.$default({
+    $scope.chartTypes = ['areaspline', 'spline', 'column', 'area','line'];
+	
+	$scope.$storage = $localStorage.$default({
 		widthSliderVal: 1,
 		selectedSensor: [],
 		selectedField: [],
@@ -15,8 +16,10 @@ angular.module('gsnClientApp')
 		chartIndices: [],
 		chartConfig: [],
 		lastRefresh: '-',
-		lastResults: []
+		lastResults: [],
+		selectedChartType: [$scope.chartTypes[0]]
 	});
+    
 	$scope.timeFormat = SettingsService.timeFormat;
 	$scope.timeFormatOptions = SettingsService.timeFormatOptions;
     $scope.columnDefs = [];
@@ -30,6 +33,7 @@ angular.module('gsnClientApp')
 	$scope.dataOutputChart = $scope.$storage.dataOutputChart;	// output# -> chartID
 	$scope.chartIndices = $scope.$storage.chartIndices;
 	$scope.chartConfig = $scope.$storage.chartConfig;
+	$scope.selectedChartType = $scope.$storage.selectedChartType;
 	
 	$scope.selectedSensor = $scope.$storage.selectedSensor;
   	$scope.selectedField = $scope.$storage.selectedField;
@@ -69,9 +73,7 @@ angular.module('gsnClientApp')
     var myData = [];
     $scope.filterData;
 
-    $scope.chartTypes = ['areaspline', 'spline', 'column', 'area','line'];
-    
-    $scope.selectedChartType = $scope.chartTypes[0];
+    $scope.outputsOpen = true;
 	
     $scope.widthSlider = {
 		options: {
@@ -82,7 +84,7 @@ angular.module('gsnClientApp')
 	};
 
   	VirtualSensorService.get(function (data) {
-  		var allSensors = {	name: "All",
+  		/*var allSensors = {	name: "All",
   							description : "",
   							structureFields : [],
 
@@ -94,7 +96,7 @@ angular.module('gsnClientApp')
   		allSensors.structureFields.splice(0,0, "All");
   		allSensors.structureFields = uniq(allSensors.structureFields);
   	
-  		data.sensors.splice(0,0,allSensors);
+  		data.sensors.splice(0,0,allSensors);*/
 
   		sensors = data.sensors;
 		
@@ -378,6 +380,10 @@ angular.module('gsnClientApp')
     Highcharts.setOptions(                                            
         $scope.defaultChartOptions
     );
+    
+    $scope.clearStorage = function() {
+		$localStorage.$reset();
+	};
 
     $scope.drawByFilter = function(data) {
 		
@@ -391,11 +397,11 @@ angular.module('gsnClientApp')
 		  for (var j = 0; j < $scope.results.length; j++) {
 			  if ($scope.results[j].name == $scope.selectedSensor[i].name) {
 				  for (var k = 0; k < $scope.results[j].header.length; k++) {
-					  if ($scope.results[j].header[k].toLowerCase() == $scope.selectedField[i].toLowerCase()) {
+					  if ($scope.selectedField[i].toLowerCase() == 'all' || $scope.results[j].header[k].toLowerCase() == $scope.selectedField[i].toLowerCase()) {
 						  var chartId = $scope.dataOutputChart[i];
 						  var seriesArray = [];
 				  
-							myData = ChartService.getDataForChart($scope.results[i], $scope.selectedChartType, new Date($scope.from_iso), new Date($scope.until_iso));
+							myData = ChartService.getDataForChart($scope.results[j], $scope.selectedField[i], $scope.selectedChartType[i], new Date($scope.from_iso), new Date($scope.until_iso));
 		  
 							if ($scope.chartConfig[chartId] == null) {
 							// create its config object
@@ -452,10 +458,10 @@ angular.module('gsnClientApp')
 	}
     
     
-    $scope.seriesTypeChange = function(type) {
-      var seriesArray = $scope.chartConfig.series;
+    $scope.seriesTypeChange = function(type, index) {
+      var seriesArray = $scope.chartConfig[index].series;
       for (var i = 0; i < seriesArray.length; i++) {
-        $scope.chartConfig.series[i].type =  type;    
+        $scope.chartConfig[index].series[i].type =  type;    
       }
     };
     

@@ -1,0 +1,22 @@
+
+					                    <div style="" class="panel radius vs-box" >
+					                     		<a ng-click="removeSensor($index);" class="round-button"
+					                     				style="position:relative; top:0px;right:0px;">X</a>
+										        <h4>
+													<strong>
+											            <span class="vsname">{{sensor.name}}</span>
+													</strong>
+										            <small><span class="timed" ng-show="updating">Loading...</span></small>
+										        </h4>
+
+										        <div ng-repeat="field in sensor.structureFields">
+														<div ng-if="sensor.fields[field].type === 'binary:image/jpeg' || sensor.fields[field].type === 'binary:image/png' || sensor.fields[field].type === 'binary:image/svg+xml'" style="position:relative;left:0px;">{{field}}<br />
+																<img ng-src="{{sensor.fields[field].value}}" 
+																		style="width:340px; height:270px" />
+														</div>
+														<div ng-if="sensor.fields[field].type !== 'binary:image/jpeg' && sensor.fields[field].type !== 'binary:image/png' && sensor.fields[field].type !== 'binary:image/svg+xml'" style="">	
+															<i>{{field}}</i> : <b>{{sensor.fields[field].value}}</b>
+														</div>
+														
+												</div>
+										</div>

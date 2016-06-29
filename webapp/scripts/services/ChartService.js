@@ -3,16 +3,19 @@
 angular.module('gsnClientApp')
   .service('ChartService', function ($http) {
 
-    this.getDataForChart = function(sensorResult, type, fromDate, untilDate) {
+    this.getDataForChart = function(sensorResult, field, type, fromDate, untilDate) {
       var nValues = sensorResult.header.length-1;
       var allData = {};
       var valueNames = {};
       var myData = [];
+      var lowField = field.toLowerCase();
 
-      for (var j = 0; j < nValues; j++)
-      {
-        allData[j] = new Array();
-        valueNames[j] = sensorResult.header[j] + " [" + sensorResult.name + "]";
+      for (var j = 0, k = 0; j < nValues; j++) {
+		if (lowField == 'all' || sensorResult.header[j].toLowerCase() == lowField) {
+			allData[k] = new Array();
+			valueNames[k] = sensorResult.header[j] + " [" + sensorResult.name + "]";
+			k++;
+		}
       }
 	  /*
 	  if (Object.prototype.toString.call(fromDate) === "[object Date]" && Object.prototype.toString.call(untilDate) === "[object Date]") {
@@ -36,24 +39,27 @@ angular.module('gsnClientApp')
         //var firstDate = new Date(Date.UTC(date[0], date[1], date[2], time[0], time[1]));
         var firstDate = new Date(date[0], date[1]-1, date[2], time[0], time[1], time[2]);
 
-        for (var j = 0; j < nValues; j++)
-        {     
-			if (sensorResult.tuples.length > 1000) {
-			  allData[j].push([
-				firstDate,
-				parseFloat(data[sensorResult.header[j]])
-			  ]);
-			 } else {
-				allData[j].push({
-					x: firstDate,
-					y: parseFloat(data[sensorResult.header[j]])
-			  });
-			 }
-        };
+        for (var j = 0, k = 0; j < nValues; j++) {     
+			if (lowField == 'all' || sensorResult.header[j].toLowerCase() == lowField) {
+				if (sensorResult.tuples.length > 1000) {
+					allData[k].push([
+						firstDate,
+						parseFloat(data[sensorResult.header[j]])
+					]);
+				} else {
+					allData[k].push({
+						x: firstDate,
+						y: parseFloat(data[sensorResult.header[j]])
+					});
+				}
+				k++;
+			}
+		 }
       }
 
-      for (var j = 0; j < nValues; j++)
+      for (var j = 0; j < Object.keys(allData).length; j++)
       {
+		//if (lowField == 'all' || sensorResult.header[j].toLowerCase() == lowField) {
         myData.push({
           name: valueNames[j],
           data: allData[j].reverse(),
@@ -73,6 +79,7 @@ angular.module('gsnClientApp')
             radius : 3
           }
         });
+	//}
       }
 
       return myData;

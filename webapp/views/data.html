@@ -59,9 +59,16 @@
 		<div class="large-2 medium-2 columns left">
 			<select ng-model="dataOutputChart[$index]" ng-options="i for i in chartIndices"></select>
 		</div>
+		<div class="large-1 columns">
+			Chart type
+		</div>
+		<div class="large-2 medium-2 columns left">
+			<select ng-model="selectedChartType[$index]" ng-options="selectedChartType for selectedChartType in chartTypes" ng-change="seriesTypeChange(selectedChartType, $index)"></select>
+		</div>
 		<div class="large-1 columns left" >
 			<a ng-click="removeOutput($index)" class="alert round left button tiny secondary" ng-show = "dataOutputRows.length > 1 "><strong>X</strong></a>
 		</div>
+		
 	</div>
 	
 	<!-- FROM/TO PICKER -->
@@ -192,8 +199,14 @@
 			<tab heading="Options" ng-click="refreshSlider();">
 				<div class="content">
 						<div class="row" >
-							<div class="small-2 columns end" >
+							<div class="small-2 columns " >
 								<div popover-popup-delay="1000" popover-title="Chart width" popover-trigger="mouseenter" popover-placement="top" popover="An amount of screen width allocated per chart (1 is the widest, 4 meaning 1/4 of the screen is the narrowest). Equivalently, the number of charts in a row. " >Chart width:</div><rzslider rz-slider-model="$storage.widthSliderVal" rz-slider-options="widthSlider.options"></rzslider>
+							</div>
+						</div>
+						<br />
+						<div class="row" >
+							<div class="small-2 columns end" >
+								<div popover-popup-delay="1000" popover-title="Clear storage" popover-trigger="mouseenter" popover-placement="top" popover="Clears plotting options and data which was persisted in this browser's Web Storage." ><a popover-placement="right" popover="Please reload the page for changes to take effect." popover-trigger="click" ng-click="clearStorage()" class="alert round left button tiny secondary">Clear storage</a></div>
 							</div>
 						</div>
 						<br />
