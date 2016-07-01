@@ -63,7 +63,7 @@
 		             <!-- <div masonry="{ gutter: 20, transitionDuration: '0.5s' }">-->
 		             	<!--	<div class="wall" gridster="gridsterOpts"> -->
 								<ul>
-		                         	<li gridster-item class="box" style="" size-x="sensor.size.x" size-y="sensor.size.y" ng-repeat="sensor in sensors | filter:{visible:true}">
+		                         	<li gridster-item="sensor" class="box" style="" row="sensor.row" col="sensor.col" size-x="sensor.size.x" size-y="sensor.size.y" ng-repeat="sensor in sensors | filter:{visible:true}">
 										<sensor-widget sensor="sensor"></sensor-widget>
 									</li>
 								</ul>

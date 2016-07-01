@@ -3,7 +3,11 @@
 angular.module('gsnClientApp')
   .controller('HomeController', function ($scope, RefreshService, SettingsService,$window,$localStorage, $timeout) {
 
+
+	
+	
 	$scope.$storage = $localStorage;
+	$scope.sensors = $localStorage.savedWidgets;
     $scope.gridsterOpts = {
         defaultSizeX: 2,
         defaultSizeY: 1,
@@ -17,12 +21,11 @@ angular.module('gsnClientApp')
         avoidOverlappedWidgets:true,
         columns:Math.floor($window.innerWidth/155),
         resizable: {
-           enabled: true
+           enabled: false
         },
         draggable: {
-		   stop: function () {
-			   var s = angular.element(document.querySelector('.gridster ul')).html();
-			   $localStorage.positions = s;
+		   stop: function (event, $element, widget) {
+			   $localStorage.savedWidgets = $scope.sensors;
 		   },
            enabled: true
         }
@@ -36,7 +39,7 @@ angular.module('gsnClientApp')
 
   	$scope.interval = SettingsService.refreshInterval;
 
-    $scope.sensors = SettingsService.sensors;
+    //$scope.sensors = SettingsService.sensors;
 
     $scope.visibleSensors = [];
 
@@ -80,6 +83,10 @@ angular.module('gsnClientApp')
     $scope.getActiveSensorLabel = function(){
       return "Active sensors";
     }
+    /*
+    $scope.$watch('sensors', function(sensors) {
+		var s = 'whatever';
+	}, true);*/
 
 
     //utility functions
