@@ -41,31 +41,31 @@
 	
 	<!-- SENSORS/FIELDS TO OUTPUT -->
 	<div class="row" ng-repeat="dataOutput in dataOutputRows">
-		<div class="large-1 columns">
+		<div class="small-2 columns">
 			Virtual sensor
 		</div>
-		<div class="large-2 columns left">
+		<div class="small-2 columns left">
 			<select ng-model="selectedSensor[$index]" ng-options="o.name for o in dataOutput track by o.name" ng-change="sensorSelected($index)" ></select>
 		</div>
-	    <div class="large-1 columns">
+	    <div class="small-1 columns">
 			Field
 		</div>
-	    <div class="large-2 medium-2 columns left">
+	    <div class="small-2 columns left">
 			<select ng-model="selectedField[$index]" ng-options="o for o in selectedSensor[$index].structureFields"></select>
 		</div>
-		<div class="large-1 columns">
+		<div class="small-1 columns">
 			Draw on
 		</div>
-		<div class="large-2 medium-2 columns left">
+		<div class="small-1 columns left">
 			<select ng-model="dataOutputChart[$index]" ng-options="i for i in chartIndices"></select>
 		</div>
-		<div class="large-1 columns">
+		<div class="small-1 columns">
 			Chart type
 		</div>
-		<div class="large-2 medium-2 columns left">
+		<div class="small-1 columns left">
 			<select ng-model="selectedChartType[$index]" ng-options="selectedChartType for selectedChartType in chartTypes" ng-change="seriesTypeChange(selectedChartType, $index)"></select>
 		</div>
-		<div class="large-1 columns left" >
+		<div class="small-1 columns left" >
 			<a ng-click="removeOutput($index)" class="alert round left button tiny secondary" ng-show = "dataOutputRows.length > 1 "><strong>X</strong></a>
 		</div>
 		
@@ -73,10 +73,10 @@
 	
 	<!-- FROM/TO PICKER -->
 	<div class="row">
-		<div class="large-1 columns">
+		<div class="small-2 columns">
 			From
 		</div>
-	    <div class="large-2 columns left">
+	    <div class="small-2 columns left">
 			<input id="datetimepickerfrom" type="text" ng-model="from" ng-change="fromChanged()">
 			<script type="text/javascript">
 				jQuery('#datetimepickerfrom').datetimepicker({
@@ -86,10 +86,10 @@
 			</script>
 		</div>
 	
-		<div class="large-1 columns">
+		<div class="small-1 columns left">
 			Until
 		</div>
-		<div class="large-2 columns left">
+		<div class="small-2 columns left end">
 			<input id="datetimepickeruntil" type="text" ng-model="until" ng-change="untilChanged()">
 				<script type="text/javascript">
 					jQuery('#datetimepickeruntil').datetimepicker({
@@ -143,22 +143,22 @@
 <br/>
 
 <!-- TABS -->
-<div class = "row">
+<div id="chartingArea" class = "row">
 	<div class="large-12 columns" >
 		<tabset>	
-			<tab heading="Plot">
+			<tab heading="Plot" ng-click="reflowCharts()">
 				<div class="content">
 					<div class="row">
-						<div class="large-2 columns" >
-							<a ng-click="fetchData(); checkAccord();" class="alert round left button tiny secondary">Draw by filter</a>
+						<div class="small-2 columns" >
+							<a ng-click="fetchData()" class="alert round left button tiny secondary">Update charts</a>
 						</div>
-						<div class="large-2 columns end" >
+						<div class="small-10 columns end " style="position:relative;top:5px" >
 							<i>Last refresh on: {{$storage.lastRefresh}}</i>
 						</div>
 					</div>
 					<div class="row">
 						<div ng-repeat="c in chartConfig" >
-							<div class="large-{{12 / $storage.widthSliderVal}} columns " >
+							<div class="small-{{12 / $storage.widthSliderVal}} columns " >
 								   
 								<highchart id="{{'chartdiv' + $index}}" config="chartConfig[$index]" class="chartstyle" ></highchart>
 							</div>
@@ -166,19 +166,29 @@
 					</div>
 				</div>
 			</tab>
-			<tab heading="Table" ng-click="fetchData();">
+			<tab heading="Table" ">
 				<div class="content">
-						<div class="row">
-							<div class="large-2 columns left" style="position:relative;left:0px;">Virtual sensor:
-								<select ng-model="selectedTable" ng-options="o.name for o in results" ng-change="showResulTable()"></select>
+					<div class="row">
+						<div class="small-2 columns left">
+							Virtual sensor:
+							<select ng-model="tableOpts.selectedTable" 
+                                ng-options="o.name for o in results"
+                                ng-change="showResulTable()">
+							</select>
+						</div>
+						<div class="small-2 columns left " style="position:relative;top:20px" >
+								<a ng-click="fetchData();" class="alert round left button tiny secondary">Fetch new data</a>
+						</div>
+						<div class="small-6 columns left end" style="position:relative;top:20px" >
+							<i>Last refresh on: {{$storage.lastRefresh}}</i>
+						</div>
+					</div>
+					<div class="row">
+						<div class="large-12 columns">
+							<div class="gridStyle" ui-grid="gridOptions">
 							</div>
 						</div>
-						<div class="row">
-							<div class="large-12 columns">
-								<div class="gridStyle" ng-grid="gridOptions">
-								</div>
-							</div>
-						</div>
+					</div>
 				</div>
 			</tab>
 			<tab heading="Download">

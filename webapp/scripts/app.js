@@ -100,7 +100,7 @@ app.config(function (uiGmapGoogleMapApiProvider) {
 	});
 });
 
-app.run(function($rootScope, $location, $http, NavigationService) {
+app.run(function($rootScope, $location, $anchorScroll, $http, NavigationService) {
     $http.get('/routes').success(function(data){
         for(var i=0; i<data.length;++i){
           routeProviderReference.when(data[i].name,{
@@ -135,6 +135,7 @@ app.run(function($rootScope, $location, $http, NavigationService) {
     $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
 		$rootScope.title = current.$$route.title;
     });
+    
 });
 
 //$(document).foundation();

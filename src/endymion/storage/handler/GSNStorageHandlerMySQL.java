@@ -1,7 +1,7 @@
 package endymion.storage.handler;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import javax.xml.bind.DatatypeConverter;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import endymion.exception.EndymionException;
 import endymion.logger.EndymionLoggerEnum;
 
@@ -156,7 +156,7 @@ public class GSNStorageHandlerMySQL extends GSNStorageHandler {
     }
 
     private InputStream imageToInputStream (String image) {
-        byte[] bytes = DatatypeConverter.parseBase64Binary(image);
+        byte[] bytes = Base64.decode(image);
 
         return new ByteArrayInputStream(bytes);
     }

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('gsnClientApp')
-  .controller('DataController', function ($scope, VirtualSensorService, SettingsService, ChartService, $http, moment, $localStorage, $timeout) {
+  .controller('DataController', function ($scope, $anchorScroll, VirtualSensorService, SettingsService, ChartService, $http, moment, $localStorage, $timeout, uiGridConstants) {
 
     var sensors;
     
@@ -22,12 +22,17 @@ angular.module('gsnClientApp')
     
 	$scope.timeFormat = SettingsService.timeFormat;
 	$scope.timeFormatOptions = SettingsService.timeFormatOptions;
-    $scope.columnDefs = [];
-    $scope.tuples = [];
+
+	$scope.gridApi;
 
     $scope.gridOptions = {
-      columnDefs: 'columnDefs',
-      data: 'tuples'
+      columnDefs: [],
+      data: [],
+      enableSorting: true
+    };
+    
+    $scope.gridOptions.onRegisterApi = function(gridApi) {
+        $scope.gridApi = gridApi;
     };
 	
 	$scope.dataOutputChart = $scope.$storage.dataOutputChart;	// output# -> chartID
@@ -47,6 +52,10 @@ angular.module('gsnClientApp')
     $scope.selectedConditionMaxValue = [];
     
     $scope.conditionRows = [];
+    
+    $scope.tableOpts = {
+		selectedTable: $scope.results[0]
+	}
     
   	$scope.numberOfValuesToFetchOptions = SettingsService.numberOfValuesToFetchOptions;
   	$scope.numberOfValuesToFetch = SettingsService.numberOfValuesToFetch;
@@ -239,10 +248,15 @@ angular.module('gsnClientApp')
 
 
     $scope.showResulTable = function() {
-      var options = createGridOptions($scope.selectedTable);
-      $scope.columnDefs = options.columnDefs;
-      $scope.tuples = options.data;
-    };
+      var options = createGridOptions($scope.tableOpts.selectedTable);
+      $scope.gridOptions.columnDefs = options.columnDefs;
+      $scope.gridOptions.data = options.data;
+	  $timeout(function () {
+                $scope.$apply(function () {
+                    $scope.gridApi.core.handleWindowResize();
+                });
+      }, 800);
+	};
 
     $scope.fetchData = function() {
       var request = prepareRequest();
@@ -397,11 +411,18 @@ angular.module('gsnClientApp')
 		  for (var j = 0; j < $scope.results.length; j++) {
 			  if ($scope.results[j].name == $scope.selectedSensor[i].name) {
 				  for (var k = 0; k < $scope.results[j].header.length; k++) {
-					  if ($scope.selectedField[i].toLowerCase() == 'all' || $scope.results[j].header[k].toLowerCase() == $scope.selectedField[i].toLowerCase()) {
+					  if ($scope.selectedField[i].toLowerCase() == 'all' 
+					  || $scope.results[j].header[k].toLowerCase() 
+					     == $scope.selectedField[i].toLowerCase()) {
 						  var chartId = $scope.dataOutputChart[i];
 						  var seriesArray = [];
 				  
-							myData = ChartService.getDataForChart($scope.results[j], $scope.selectedField[i], $scope.selectedChartType[i], new Date($scope.from_iso), new Date($scope.until_iso));
+							myData = ChartService.getDataForChart(
+							    $scope.results[j], 
+							    $scope.selectedField[i], 
+							    $scope.selectedChartType[i], 
+							    new Date($scope.from_iso), 
+							    new Date($scope.until_iso));
 		  
 							if ($scope.chartConfig[chartId] == null) {
 							// create its config object
@@ -413,6 +434,7 @@ angular.module('gsnClientApp')
 									func: function(chart) {
 										$timeout(function() {
 											chart.reflow();
+											$scope.scrollTo('chartingArea');
 										}, 0);
 									}
 								};
@@ -423,7 +445,7 @@ angular.module('gsnClientApp')
 								seriesArray.push(myData[l]);
 							}
 						}
-				}
+				   }
 			  }
 			}
 		}
@@ -465,6 +487,10 @@ angular.module('gsnClientApp')
       }
     };
     
+    $scope.scrollTo = function(id) {
+		$anchorScroll(id);
+	};
+    
     
     $scope.toggleLabels = function () {
       enableDataLabels = !enableDataLabels;
@@ -479,12 +505,13 @@ angular.module('gsnClientApp')
 		$timeout(function() {
 			$scope.$broadcast('rzSliderForceRender');
 		});
-	};
+	}
 	
-	$scope.checkAccord = function() {
-		if ($scope.closeAccord) {
-			$scope.outputsOpen = false;
-		}
+	$scope.reflowCharts = function() {
+		$scope.fetchData();
+		$timeout(function() {
+			$scope.$broadcast('highchartsng.reflow');
+		}, 10);
 	}
 	
 

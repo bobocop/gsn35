@@ -1,6 +1,6 @@
 package endymion.collector.connection;
 
-import javax.xml.bind.DatatypeConverter;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import endymion.time.GSNTimeManager;
 import endymion.exception.EndymionException;
 import endymion.logger.EndymionLoggerEnum;
@@ -237,7 +237,7 @@ public class GSNConnectionHTTP extends GSNConnection {
             InputStream stream = establishConnection(url, authorization);
 
             byte[] bytes = IOUtils.toByteArray(stream);
-            String output = DatatypeConverter.printBase64Binary(bytes);
+            String output = Base64.encode(bytes);
 
             stream.close();
             return output;
@@ -262,7 +262,7 @@ public class GSNConnectionHTTP extends GSNConnection {
         /**
          * Basic authorization is needed for GSN HTTP request
          */
-        connection.setRequestProperty("Authorization", DatatypeConverter.printBase64Binary(authorization.getBytes()));
+        connection.setRequestProperty("Authorization", Base64.encode(authorization.getBytes()));
         connection.connect();
 
         return connection.getInputStream();
