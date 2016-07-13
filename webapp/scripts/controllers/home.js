@@ -7,7 +7,7 @@ angular.module('gsnClientApp')
 	
 	
 	$scope.$storage = $localStorage;
-	$scope.sensors = $localStorage.savedWidgets;
+	$scope.sensors = $localStorage.savedWidgets == undefined ? SettingsService.sensors : $localStorage.savedWidgets;
     $scope.gridsterOpts = {
         defaultSizeX: 2,
         defaultSizeY: 1,

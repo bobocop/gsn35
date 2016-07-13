@@ -5,7 +5,7 @@
 			Auto-refresh every :
 		</div>
 		
-		<div class="small-2 columns " >
+		<div class="small-1 columns " >
 			<select ng-model="interval" ng-options="o.name for o in intervalOptions" ng-change="setRefreshInterval()" ></select>
 		</div>
 		
@@ -17,9 +17,8 @@
 			</span>
 		</div>
 		
-		<div 
-			class="small-7 columns " 
-			isteven-multi-select
+		<div class="small-8 columns left " >
+			<div isteven-multi-select
 			helper-elements=""
 			input-model="sensors"
 			output-model="visibleSensors"
@@ -28,11 +27,11 @@
 			item-label="name"
 			tick-property="visible"
 			button-label-fn="getActiveSensorLabel()">
+			</div>
 		</div>
-		<br/>
 	</div>
 	<div class="row">
-		<div class="medium-9 columns">
+		<div class="small-12 columns">
 			<div class="wall" gridster="gridsterOpts">
 				<ul>
 					<li gridster-item="sensor" class="box" style="" row="sensor.row" col="sensor.col" size-x="sensor.size.x" size-y="sensor.size.y" ng-repeat="sensor in sensors | filter:{visible:true}">
