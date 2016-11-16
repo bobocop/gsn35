@@ -79,16 +79,6 @@ angular.module('gsnClientApp')
       return $scope.interval.name;
     }
 
-
-    $scope.getActiveSensorLabel = function(){
-      return "Active sensors";
-    }
-    /*
-    $scope.$watch('sensors', function(sensors) {
-		var s = 'whatever';
-	}, true);*/
-
-
     //utility functions
     function getSensorData() {
       

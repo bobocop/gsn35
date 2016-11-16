@@ -10,10 +10,14 @@ import javax.imageio.ImageIO;
 import net.coobird.thumbnailator.Thumbnails;
 
 import org.apache.log4j.Logger;
+import org.bytedeco.javacpp.opencv_core.IplImage;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameConverter.ToIplImage;
 
-import com.googlecode.javacv.FrameGrabber;
-import com.googlecode.javacv.cpp.opencv_core.IplImage;
-
+import sun.awt.image.ToolkitImage;
 import gsn.beans.AddressBean;
 import gsn.beans.DataField;
 import gsn.beans.DataTypes;
@@ -40,6 +44,9 @@ public class USBCamWrapper extends AbstractWrapper {
     private int width = DEFAULT_WIDTH;
     private int height = DEFAULT_HEIGHT;
     private int deviceId = DEFAULT_DEVICE_ID;
+    
+    private ToIplImage converter = new ToIplImage();
+    private Java2DFrameConverter paintConverter = new Java2DFrameConverter();
     
   
    
@@ -72,9 +79,9 @@ public class USBCamWrapper extends AbstractWrapper {
                     }
                 }
                       
-                IplImage img = imageGrabber.grab();            
+                Frame img = imageGrabber.grab();   
                 
-                BufferedImage image = resizeImage(img.getBufferedImage());
+                BufferedImage image = resizeImage(paintConverter.getBufferedImage(img, 1));
                 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(image, "JPEG", baos);

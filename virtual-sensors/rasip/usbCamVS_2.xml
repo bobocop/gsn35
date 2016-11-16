@@ -17,7 +17,7 @@
 				<address wrapper="usbcam">
 					<predicate key="image-width">400</predicate>
 					<predicate key="image-height">400</predicate>
-					<predicate key="device-id">0</predicate>
+					<predicate key="device-id">1</predicate>
 				</address>
 				<query>select picture from wrapper</query>
 			</source>

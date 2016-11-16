@@ -313,7 +313,7 @@ angular.module('gsnClientApp')
           var column = {field:sensorResult.header[i], displayName:sensorResult.header[i]};
           if (typeof sensor.fields[sensorResult.header[i].toLowerCase()] !== 'undefined'){
             if(sensor.fields[sensorResult.header[i].toLowerCase()]["type"] .match("^binary:image/jpeg")) {
-              column["cellTemplate"] = '<div><a style="position:relative;top:2px;left:150px;" href="{{row.getProperty(col.field)}}" target="_blank"><img src="{{row.getProperty(col.field)}}" width="30" height="30"/></a></div>';
+              column["cellTemplate"] = '<div><a style="position:relative;top:2px;left:150px;" ng-href="{{row.entity[col.field]}}" target="_blank"><img ng-src="{{row.entity[col.field]}}" width="30" height="30"/></a></div>';
             }
           }
           columnDefs.push(column);
