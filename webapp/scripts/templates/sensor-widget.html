@@ -1,7 +1,6 @@
 
-					                    <div style="" class="panel radius vs-box" >
-					                     		<a ng-click="removeSensor($index);" class="round-button"
-					                     				style="position:relative; top:0px;right:0px;">X</a>
+					                    <div class="panel radius vs-box" >
+					                     		<a style="position: relative; left:270px;" ng-click="removeSensor($index);" class="round-button">X</a>
 										        <h4>
 													<strong>
 											            <span class="vsname">{{sensor.name}}</span>
@@ -12,7 +11,7 @@
 										        <div ng-repeat="field in sensor.structureFields">
 														<div ng-if="sensor.fields[field].type === 'binary:image/jpeg' || sensor.fields[field].type === 'binary:image/png' || sensor.fields[field].type === 'binary:image/svg+xml'" style="position:relative;left:0px;">{{field}}<br />
 																<img ng-src="{{sensor.fields[field].value}}" 
-																		style="width:340px; height:270px" />
+																		style="width:280px; height:210px" />	<!-- 4:3? -->
 														</div>
 														<div ng-if="sensor.fields[field].type !== 'binary:image/jpeg' && sensor.fields[field].type !== 'binary:image/png' && sensor.fields[field].type !== 'binary:image/svg+xml'" style="">	
 															<i>{{field}}</i> : <b>{{sensor.fields[field].value}}</b>
